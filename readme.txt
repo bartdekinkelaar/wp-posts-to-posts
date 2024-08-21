@@ -3,8 +3,8 @@ Contributors: scribu, ciobi, ayecode, stiofansisland
 Tags: connections, custom post types, relationships, many-to-many, users
 Requires at least: 6.0
 Requires PHP: 5.6
-Tested up to: 6.5
-Stable tag: 1.7.3
+Tested up to: 6.6
+Stable tag: 1.7.4
 
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -59,6 +59,9 @@ Additional info can be found on the [wiki](http://github.com/scribu/wp-posts-to-
 5. Connection Types screen
 
 == Changelog ==
+
+= 1.7.4 - 2024-08-21 =
+* WordPress v6.6 compatibility check - CHANGED
 
 = 1.7.3 - 2024-04-11 =
 * WordPress v6.5 compatibility check - CHANGED
