@@ -1,7 +1,8 @@
 {
-    "name": "scribu/posts-to-posts",
+    "name": "bartdekinkelaar/posts-to-posts",
     "type": "wordpress-plugin",
-    "homepage": "http://wordpress.org/plugins/posts-to-posts",
+    "description": "Posts to Posts is a plugin that allows you to create relationships between posts in WordPress.",
+    "git": "https://github.com/bartdekinkelaar/posts-to-posts",
     "license": "GPL-2.0+",
     "minimum-stability": "dev",
     "scripts": {
@@ -21,5 +22,10 @@
             "type": "vcs",
             "url": "https://github.com/jeffreyvr/wp-scb-framework"
         }
-    ]
+    ],
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true
+        }
+    }
 }
