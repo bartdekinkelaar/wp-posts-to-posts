@@ -3,7 +3,7 @@
 Plugin Name: Posts 2 Posts
 Description: Create many-to-many relationships between all types of posts.
 Version: 1.7.4
-Author: scribu
+Author: scribu / Barrt
 Author URI: http://scribu.net/
 Plugin URI: http://scribu.net/wordpress/posts-to-posts
 Text Domain: posts-to-posts
@@ -14,9 +14,13 @@ define( 'P2P_PLUGIN_VERSION', '1.7.4' );
 
 define( 'P2P_TEXTDOMAIN', 'posts-to-posts' );
 
-function _p2p_load() {
+function load_posts_to_posts_translations() {
 	load_plugin_textdomain( P2P_TEXTDOMAIN, '', basename( dirname( __FILE__ ) ) . '/lang' );
+}
 
+add_action('init', 'load_posts_to_posts_translations');
+
+function _p2p_load() {
 	if ( !function_exists( 'p2p_register_connection_type' ) ) {
 		require_once dirname( __FILE__ ) . '/vendor/scribu/lib-posts-to-posts/autoload.php';
 	}
