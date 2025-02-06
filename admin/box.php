@@ -5,13 +5,10 @@
  */
 class P2P_Box {
 	private $ctype;
-
 	private $args;
-
 	private $columns;
-
 	private $labels;
-
+	private $connected_items;
 	private static $enqueued_scripts = false;
 
 	private static $admin_box_qv = array(
@@ -22,11 +19,8 @@ class P2P_Box {
 
 	function __construct( $args, $columns, $ctype ) {
 		$this->args = $args;
-
 		$this->columns = $columns;
-
 		$this->ctype = $ctype;
-
 		$this->labels = $this->ctype->get( 'opposite', 'labels' );
 	}
 
