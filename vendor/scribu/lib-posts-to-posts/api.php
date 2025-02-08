@@ -90,7 +90,7 @@ function p2p_connection_exists( $p2p_type, $args = array() ) {
  * - 'from': Object id. The first end of the connection. (optional)
  * - 'to': Object id. The second end of the connection. (optional)
  * - 'fields': Which field of the connection to return. Can be:
- * 		'all', 'object_id', 'p2p_from', 'p2p_to', 'p2p_id' or 'count'
+ * 		'all', 'object_id', 'post_type_from', 'post_type_to', 'p2p_id' or 'count'
  *
  * @return array
  */
@@ -113,7 +113,7 @@ function p2p_get_connections(string $p2p_type, array $args = []): array {
 
 		$fields = $args['fields'];
 		if ( 'object_id' == $args['fields'] )
-			$fields = ( 'to' == $direction ) ? 'p2p_from' : 'p2p_to';
+			$fields = ( 'to' == $direction ) ? 'post_type_from' : 'post_type_to';
 
 		$result = array_merge( $result, _p2p_get_connections( $p2p_type, array(
 			'from' => $dirs[0],
@@ -129,7 +129,7 @@ function p2p_get_connections(string $p2p_type, array $args = []): array {
 function _p2p_get_connections(string $p2p_type, array $args = []): array {
 	global $wpdb;
 
-	$where = $wpdb->prepare( 'WHERE p2p_type = %s', $p2p_type );
+	$where = $wpdb->prepare( 'WHERE connection_name = %s', $p2p_type );
 
 	foreach ( array( 'from', 'to' ) as $key ) {
 		if ( 'any' == $args[ $key ] )
@@ -144,12 +144,12 @@ function _p2p_get_connections(string $p2p_type, array $args = []): array {
 	}
 
 	$sql_field = match ($args['fields']) {
-		'p2p_id', 'p2p_from', 'p2p_to' => $args['fields'],
+		'p2p_id', 'post_type_from', 'post_type_to' => $args['fields'],
 		'count' => 'COUNT(*)',
 		default => '*'
 	};
 
-	$query = "SELECT $sql_field FROM $wpdb->p2p $where";
+	$query = "SELECT $sql_field FROM {$wpdb->prefix}p2p_connection_types $where";
 
 	return '*' == $sql_field 
 		? $wpdb->get_results( $query ) 
@@ -201,8 +201,8 @@ function p2p_create_connection(string $p2p_type, array $args): bool|int {
 
 	$wpdb->insert( $wpdb->p2p, array(
 		'p2p_type' => $p2p_type,
-		'p2p_from' => $dirs[0],
-		'p2p_to' => $dirs[1]
+		'post_type_from' => $dirs[0],
+		'post_type_to' => $dirs[1]
 	) );
 
 	$p2p_id = $wpdb->insert_id;

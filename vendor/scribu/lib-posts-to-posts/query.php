@@ -156,7 +156,7 @@ class P2P_Query {
 
 			$part = $wpdb->prepare( "$wpdb->p2p.p2p_type = %s", $directed->name );
 
-			$fields = array( 'p2p_from', 'p2p_to' );
+			$fields = array( 'post_type_from', 'post_type_to' );
 
 			switch ( $directed->get_direction() ) {
 
@@ -174,8 +174,8 @@ class P2P_Query {
 				break;
 			default:
 				$part .= sprintf ( " AND (
-					($main_id_column = $wpdb->p2p.p2p_to AND $wpdb->p2p.p2p_from IN (%s)) OR
-					($main_id_column = $wpdb->p2p.p2p_from AND $wpdb->p2p.p2p_to IN (%s))
+					($main_id_column = $wpdb->p2p.post_type_to AND $wpdb->p2p.post_type_from IN (%s)) OR
+					($main_id_column = $wpdb->p2p.post_type_from AND $wpdb->p2p.post_type_to IN (%s))
 				)",
 					$this->do_other_query( $directed, 'current' ),
 					$this->do_other_query( $directed, 'opposite' )

@@ -114,11 +114,11 @@ function _p2p_first( $args ) {
 
 /** @internal */
 function _p2p_get_other_id( $item ) {
-	if ( $item->ID == $item->p2p_from )
-		return $item->p2p_to;
+	if ( $item->ID == $item->post_type_from )
+		return $item->post_type_to;
 
-	if ( $item->ID == $item->p2p_to )
-		return $item->p2p_from;
+	if ( $item->ID == $item->post_type_to )
+		return $item->post_type_from;
 
 	trigger_error( "Corrupted data for item $inner_item->ID", E_USER_WARNING );
 }
