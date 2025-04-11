@@ -3,6 +3,8 @@
 Plugin Name: Posts 2 Posts
 Description: Create many-to-many relationships between all types of posts.
 Version: 1.7.5
+Requires at least: 6.0
+Requires PHP: 5.6
 Author: scribu / Barrt
 Author URI: http://scribu.net/
 Plugin URI: http://scribu.net/wordpress/posts-to-posts

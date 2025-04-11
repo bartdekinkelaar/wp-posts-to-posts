@@ -9,7 +9,16 @@ class P2P_Tools_Page extends scbAdminPage {
 			'parent' => 'tools.php'
 		);
 
+		add_action( 'admin_init', array( $this, 'init_args' ) );
 		add_action( 'admin_notices', array( $this, 'maybe_install' ) );
+	}
+
+	function init_args() {
+		$this->args = array(
+			'page_title' => __( 'Connection Types', P2P_TEXTDOMAIN ),
+			'page_slug' => 'connection-types',
+			'parent' => 'tools.php'
+		);
 	}
 
 	function maybe_install() {
