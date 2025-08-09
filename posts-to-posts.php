@@ -5,7 +5,7 @@ Description: Create many-to-many relationships between all types of posts.
 Version: 1.7.5
 Requires at least: 6.0
 Requires PHP: 5.6
-Author: scribu
+Author: scribu / Barrt
 Author URI: http://scribu.net/
 Plugin URI: http://scribu.net/wordpress/posts-to-posts
 Text Domain: posts-to-posts
@@ -13,12 +13,15 @@ Domain Path: /lang
 */
 
 define( 'P2P_PLUGIN_VERSION', '1.7.5' );
-
 define( 'P2P_TEXTDOMAIN', 'posts-to-posts' );
 
-function _p2p_load() {
+function load_posts_to_posts_translations() {
 	load_plugin_textdomain( P2P_TEXTDOMAIN, '', basename( dirname( __FILE__ ) ) . '/lang' );
+}
 
+add_action('init', 'load_posts_to_posts_translations');
+
+function _p2p_load() {
 	if ( !function_exists( 'p2p_register_connection_type' ) ) {
 		require_once dirname( __FILE__ ) . '/vendor/scribu/lib-posts-to-posts/autoload.php';
 	}
@@ -48,7 +51,7 @@ function _p2p_load_admin() {
 	new P2P_Column_Factory;
 	new P2P_Dropdown_Factory;
 
-	new P2P_Tools_Page;
+	require_once dirname( __FILE__ ) . '/admin/settings/connections-overview.php';
 }
 
 function _p2p_init() {
@@ -69,4 +72,3 @@ if ( is_dir( dirname( __FILE__ ) . '/vendor' ) ) {
 
 scb_init( '_p2p_load' );
 add_action( 'wp_loaded', '_p2p_init' );
-

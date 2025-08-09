@@ -6,21 +6,23 @@
  * @link https://github.com/scribu/wp-posts-to-posts/wiki/p2p_register_connection_type
  *
  * @param array $args
- * @return bool|object False on failure, P2P_Connection_Type instance on success.
+ * @return bool|P2P_Connection_Type False on failure, P2P_Connection_Type instance on success.
  */
-function p2p_register_connection_type( $args ) {
+function p2p_register_connection_type(array $args): bool|P2P_Connection_Type {
 	if ( !did_action('init') ) {
-		trigger_error( "Connection types should not be registered before the 'init' hook." );
+		trigger_error( "Connection types should not be registered before the 'init' hook.", E_USER_WARNING );
 	}
 
 	$argv = func_get_args();
 
 	if ( count( $argv ) > 1 ) {
-		$args = array();
-		foreach ( array( 'from', 'to', 'reciprocal' ) as $i => $key ) {
-			if ( isset( $argv[ $i ] ) )
-				$args[ $key ] = $argv[ $i ];
-		}
+		$args = array_intersect_key(
+			array_combine(
+				['from', 'to', 'reciprocal'],
+				array_slice($argv, 0, 3)
+			),
+			array_flip(['from', 'to', 'reciprocal'])
+		);
 	} else {
 		$args = $argv[0];
 	}
@@ -42,8 +44,7 @@ function p2p_register_connection_type( $args ) {
 			$args['admin_box']['context'] = _p2p_pluck( $args, 'context' );
 	}
 
-	if ( !isset( $args['admin_box'] ) )
-		$args['admin_box'] = 'any';
+	$args['admin_box'] = $args['admin_box'] ?? 'any';
 
 	$ctype = P2P_Connection_Type_Factory::register( $args );
 
@@ -93,15 +94,15 @@ function p2p_connection_exists( $p2p_type, $args = array() ) {
  *
  * @return array
  */
-function p2p_get_connections( $p2p_type, $args = array() ) {
-	$args = wp_parse_args( $args, array(
+function p2p_get_connections(string $p2p_type, array $args = []): array {
+	$args = wp_parse_args($args, [
 		'direction' => 'from',
 		'from' => 'any',
 		'to' => 'any',
 		'fields' => 'all',
-	) );
+	]);
 
-	$r = array();
+	$result = [];
 
 	foreach ( _p2p_expand_direction( $args['direction'] ) as $direction ) {
 		$dirs = array( $args['from'], $args['to'] );
@@ -110,26 +111,22 @@ function p2p_get_connections( $p2p_type, $args = array() ) {
 			$dirs = array_reverse( $dirs );
 		}
 
+		$fields = $args['fields'];
 		if ( 'object_id' == $args['fields'] )
 			$fields = ( 'to' == $direction ) ? 'p2p_from' : 'p2p_to';
-		else
-			$fields = $args['fields'];
 
-		$r = array_merge( $r, _p2p_get_connections( $p2p_type, array(
+		$result = array_merge( $result, _p2p_get_connections( $p2p_type, array(
 			'from' => $dirs[0],
 			'to' => $dirs[1],
 			'fields' => $fields
 		) ) );
 	}
 
-	if ( 'count' == $args['fields'] )
-		return array_sum( $r );
-
-	return $r;
+	return 'count' == $args['fields'] ? [array_sum($result)] : $result;
 }
 
 /** @internal */
-function _p2p_get_connections( $p2p_type, $args = array() ) {
+function _p2p_get_connections(string $p2p_type, array $args = []): array {
 	global $wpdb;
 
 	$where = $wpdb->prepare( 'WHERE p2p_type = %s', $p2p_type );
@@ -146,25 +143,17 @@ function _p2p_get_connections( $p2p_type, $args = array() ) {
 		$where .= " AND p2p_$key IN ($value)";
 	}
 
-	switch ( $args['fields'] ) {
-	case 'p2p_id':
-	case 'p2p_from':
-	case 'p2p_to':
-		$sql_field = $args['fields'];
-		break;
-	case 'count':
-		$sql_field = 'COUNT(*)';
-		break;
-	default:
-		$sql_field = '*';
-	}
+	$sql_field = match ($args['fields']) {
+		'p2p_id', 'p2p_from', 'p2p_to' => $args['fields'],
+		'count' => 'COUNT(*)',
+		default => '*'
+	};
 
 	$query = "SELECT $sql_field FROM $wpdb->p2p $where";
 
-	if ( '*' == $sql_field )
-		return $wpdb->get_results( $query );
-	else
-		return $wpdb->get_col( $query );
+	return '*' == $sql_field 
+		? $wpdb->get_results( $query ) 
+		: $wpdb->get_col( $query );
 }
 
 /**
@@ -183,12 +172,12 @@ function p2p_get_connection( $p2p_id ) {
 /**
  * Create a connection.
  *
- * @param int $p2p_type A valid connection type.
+ * @param string $p2p_type A valid connection type.
  * @param array $args Connection information.
  *
  * @return bool|int False on failure, p2p_id on success.
  */
-function p2p_create_connection( $p2p_type, $args ) {
+function p2p_create_connection(string $p2p_type, array $args): bool|int {
 	global $wpdb;
 
 	$args = wp_parse_args( $args, array(
@@ -198,8 +187,8 @@ function p2p_create_connection( $p2p_type, $args ) {
 		'meta' => array()
 	) );
 
-	list( $from ) = _p2p_normalize( $args['from'] );
-	list( $to ) = _p2p_normalize( $args['to'] );
+	[$from] = _p2p_normalize( $args['from'] );
+	[$to] = _p2p_normalize( $args['to'] );
 
 	if ( !$from || !$to )
 		return false;

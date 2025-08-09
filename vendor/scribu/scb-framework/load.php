@@ -65,9 +65,7 @@ class scbLoad4 {
 
 	public static function load( $do_callbacks = true ) {
 		arsort( self::$candidates );
-
 		$file = key( self::$candidates );
-
 		$path = dirname( $file ) . '/';
 
 		foreach ( self::$classes[ $file ] as $class_name ) {
@@ -102,4 +100,3 @@ function scb_init( $callback = '' ) {
 	scbLoad4::init( $callback );
 }
 endif;
-
