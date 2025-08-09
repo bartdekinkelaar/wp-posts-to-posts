@@ -51,8 +51,7 @@ function _p2p_load_admin() {
 	new P2P_Column_Factory;
 	new P2P_Dropdown_Factory;
 
-	require_once dirname( __FILE__ ) . '/admin/settings/overview-connections.php';
-	require_once dirname( __FILE__ ) . '/admin/settings/add-connections.php';
+	require_once dirname( __FILE__ ) . '/admin/settings/connections-overview.php';
 }
 
 function _p2p_init() {

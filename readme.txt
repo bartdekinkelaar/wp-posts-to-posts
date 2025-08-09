@@ -60,6 +60,9 @@ Additional info can be found on the [wiki](http://github.com/scribu/wp-posts-to-
 
 == Changelog ==
 
+= 1.7.2 - 2025-06-TBD =
+* PHP 8.3 compatibility check - CHANGED
+
 = 1.7.5 - 2025-02-19 =
 * Function _load_textdomain_just_in_time was called incorrectly - FIXED
 

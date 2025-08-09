@@ -18,12 +18,12 @@ class P2P_Storage {
 	static function install() {
 		scb_install_table( 'p2p', "
 			p2p_id bigint(20) unsigned NOT NULL auto_increment,
-			post_type_from bigint(20) unsigned NOT NULL,
-			post_type_to bigint(20) unsigned NOT NULL,
+			p2p_from bigint(20) unsigned NOT NULL,
+			p2p_to bigint(20) unsigned NOT NULL,
 			p2p_type varchar(44) NOT NULL default '',
 			PRIMARY KEY  (p2p_id),
-			KEY post_type_from (post_type_from),
-			KEY post_type_to (post_type_to),
+			KEY p2p_from (p2p_from),
+			KEY p2p_to (p2p_to),
 			KEY p2p_type (p2p_type)
 		" );
 
