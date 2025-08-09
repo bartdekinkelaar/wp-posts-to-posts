@@ -2,7 +2,7 @@
 Contributors: scribu, ciobi, ayecode, stiofansisland
 Tags: connections, custom post types, relationships, many-to-many, users
 Requires at least: 6.0
-Requires PHP: 5.6
+Requires PHP: 8.0
 Tested up to: 6.7
 Stable tag: 1.7.5
 

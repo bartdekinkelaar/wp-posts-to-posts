@@ -4,7 +4,7 @@ Plugin Name: Posts 2 Posts
 Description: Create many-to-many relationships between all types of posts.
 Version: 1.7.5
 Requires at least: 6.0
-Requires PHP: 5.6
+Requires PHP: 8.0
 Author: scribu / Barrt
 Author URI: http://scribu.net/
 Plugin URI: http://scribu.net/wordpress/posts-to-posts
@@ -35,8 +35,8 @@ function _p2p_load() {
 
 	P2P_Widget::init();
 	P2P_Shortcodes::init();
-
-	register_uninstall_hook( __FILE__, array( 'P2P_Storage', 'uninstall' ) );
+    
+    register_uninstall_hook( __FILE__, array( 'P2P_Storage', 'uninstall' ) );
 
 	if ( is_admin() )
 		_p2p_load_admin();
@@ -72,3 +72,14 @@ if ( is_dir( dirname( __FILE__ ) . '/vendor' ) ) {
 
 scb_init( '_p2p_load' );
 add_action( 'wp_loaded', '_p2p_init' );
+
+// Activation: install or upgrade storage
+register_activation_hook( __FILE__, function () {
+    if ( ! function_exists( 'p2p_register_connection_type' ) ) {
+        require_once dirname( __FILE__ ) . '/vendor/scribu/lib-posts-to-posts/autoload.php';
+    }
+    if ( class_exists( 'P2P_Storage' ) ) {
+        P2P_Storage::install();
+        update_option( 'p2p_storage', P2P_Storage::$version );
+    }
+} );

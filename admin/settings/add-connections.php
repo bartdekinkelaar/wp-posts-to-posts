@@ -67,9 +67,9 @@ class P2P_Connections_Page_Add {
             return;
         }
 
-        $connection_name = get_field('post_type_from', 'option') . '_' . get_field('post_type_to', 'option');
-        $post_type_from = get_field('post_type_from', 'option');
-        $post_type_to = get_field('post_type_to', 'option');
+        $post_type_from = sanitize_key( (string) get_field('post_type_from', 'option') );
+        $post_type_to = sanitize_key( (string) get_field('post_type_to', 'option') );
+        $connection_name = sanitize_key( $post_type_from . '_' . $post_type_to );
 
         // Validate that we have all required fields
         if (empty($connection_name) || empty($post_type_from) || empty($post_type_to)) {
@@ -78,15 +78,16 @@ class P2P_Connections_Page_Add {
 
         // Insert into wp_p2p_connection_types table
         $table_name = $wpdb->prefix . 'p2p_connection_types';
-        
+
+        // Upsert-like behavior: ignore if exists
         $result = $wpdb->insert(
             $table_name,
-            [
+            array(
                 'connection_name' => $connection_name,
                 'post_type_from' => $post_type_from,
-                'post_type_to' => $post_type_to
-            ],
-            ['%s', '%s', '%s']
+                'post_type_to' => $post_type_to,
+            ),
+            array('%s','%s','%s')
         );
 
         if ($result) {
@@ -97,7 +98,7 @@ class P2P_Connections_Page_Add {
 
             // Add admin notice
             add_action('admin_notices', function() {
-                echo '<div class="notice notice-success is-dismissible"><p>Connection type saved successfully!</p></div>';
+                echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Connection type saved successfully!', P2P_TEXTDOMAIN ) . '</p></div>';
             });
         }
     }

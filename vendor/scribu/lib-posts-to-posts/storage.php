@@ -20,11 +20,13 @@ class P2P_Storage {
 			p2p_id bigint(20) unsigned NOT NULL auto_increment,
 			p2p_from bigint(20) unsigned NOT NULL,
 			p2p_to bigint(20) unsigned NOT NULL,
-			p2p_type varchar(44) NOT NULL default '',
+			p2p_type varchar(100) NOT NULL default '',
 			PRIMARY KEY  (p2p_id),
 			KEY p2p_from (p2p_from),
 			KEY p2p_to (p2p_to),
-			KEY p2p_type (p2p_type)
+			KEY p2p_type (p2p_type),
+			KEY p2p_type_from (p2p_type, p2p_from),
+			KEY p2p_type_to (p2p_type, p2p_to)
 		" );
 
 		scb_install_table( 'p2pmeta', "
@@ -36,11 +38,22 @@ class P2P_Storage {
 			KEY p2p_id (p2p_id),
 			KEY meta_key (meta_key)
 		" );
+
+		// Optional: registry table for declared connection types (used by admin UI)
+		scb_install_table( 'p2p_connection_types', "
+			id bigint(20) unsigned NOT NULL auto_increment,
+			connection_name varchar(191) NOT NULL,
+			post_type_from varchar(191) NOT NULL,
+			post_type_to varchar(191) NOT NULL,
+			PRIMARY KEY (id),
+			UNIQUE KEY connection_name (connection_name)
+		" );
 	}
 
 	static function uninstall() {
 		scb_uninstall_table( 'p2p' );
 		scb_uninstall_table( 'p2pmeta' );
+		scb_uninstall_table( 'p2p_connection_types' );
 
 		delete_option( 'p2p_storage' );
 	}
